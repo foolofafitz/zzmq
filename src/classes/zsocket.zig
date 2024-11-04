@@ -271,6 +271,18 @@ pub const ZSocketOption = union(enum) {
     ///
     /// For more details, see https://libzmq.readthedocs.io/en/latest/zmq_setsockopt.html
     RouterHandover: bool,
+
+    /// ZMQ_SUBSCRIBE: Establish message filter
+    ///
+    ///The 'ZMQ_SUBSCRIBE' option shall establish a new message filter on a 'ZMQ_SUB' socket.
+    /// Newly created 'ZMQ_SUB' sockets shall filter out all incoming messages, therefore you should
+    /// call this option to establish an initial message filter.
+    ///
+    ///An empty 'option_value' of length zero shall subscribe to all incoming messages.
+    /// A non-empty 'option_value' shall subscribe to all messages beginning with the specified prefix.
+    /// Multiple filters may be attached to a single 'ZMQ_SUB' socket,
+    /// in which case a message shall be accepted if it matches at least one filter.
+    Subscribe: []u8,
 };
 
 /// System level socket, which allows for opening outgoing and
@@ -544,7 +556,9 @@ pub const ZSocket = struct {
 
                 result = c.zmq_setsockopt(self.socket_, c.ZMQ_ROUTER_HANDOVER, &v, @sizeOf(@TypeOf(v)));
             },
-
+            .Subscribe => {
+                result = c.zmq_setsockopt(self.socket_, c.ZMQ_SUBSCRIBE, opt.Subscribe.ptr, opt.Subscribe.len);
+            },
             //else => return error.UnknownOption,
         }
 
