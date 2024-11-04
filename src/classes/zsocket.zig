@@ -622,7 +622,9 @@ pub const ZSocket = struct {
             .RouterHandover => {
                 return error.UnknownOption; // ZMQ_ROUTER_HANDOVER cannot be retrieved
             },
-
+            .Subscribe => {
+                return error.UnknownOption; //ZMQ_SUBSCRIBE cannot be retrieved
+            },
             //else => return error.UnknownOption,
         }
 
